@@ -1,45 +1,68 @@
 <!DOCTYPE html>
 <html>
- <head>
-     <meta http-equiv="Content-type" content="text/html; charset=utf-8">   
-     <meta name="viewport" id="viewport" content="width=device-width, height=device-height,
-                                initial-scale=1.0, maximum-scale=1.0, user-scalable=no;" />
-     <script type="text/javascript" charset="utf-8" src="phonegap.js"></script>
-     <script type="text/javascript" charset="utf-8">
-            
-         function onBodyLoad() {
-             document.addEventListener("deviceready", onDeviceReady, false);
-         }
- 
-         function onDeviceReady() {
-             var options = new ContactFindOptions();
-             options.filter="Acme Corporation";
-             filter = ["displayName","organizations"];
-             navigator.contacts.find(filter, onSuccess, onError, options);
-         }
-         
-         function onSuccess(contacts) {
-             var myresults = document.getElementById("results");
-             var string = "";
-             for (var i=0; i<contacts.length; i++) {
-                 for (var j=0; j<contacts[i].organizations.length; j++) {
-                     string += "Name: " + contacts[i].displayName + "<br/>" +
-                         "Org Name: " + contacts[i].organizations[j].name + "\n" +
-                             "Department: " contacts[i].organizations[j].department + "<br/>" +
-                                 "Title: " + contacts[i].organizations[j].title);
-                 }
-             }
-             
-             myresults.innerHTML = string;
-         }
-         function onError(contactError) {
-             alert('Ooops!');
-         }
-     </script>
-    </head>
-    <body onload="onBodyLoad()">
-        <h1>Contacts</h1>
-        <h2>Guerrero Mariana</h2>
-        <div id="results"></div>
-    </body>
+  <head>
+    <title>Contact Example</title>
+
+    <script type="text/javascript" charset="utf-8" src="cordova.js"></script>
+    <script type="text/javascript" charset="utf-8">
+
+    // Wait for device API libraries to load
+    //
+    document.addEventListener("deviceready", onDeviceReady, false);
+
+    // device APIs are available
+    //
+    function onDeviceReady() {
+        // create
+        var contact = navigator.contacts.create();
+        contact.displayName = "Plumber";
+        contact.nickname = "Plumber";                 // specify both to support all devices
+        var name = new ContactName();
+        name.givenName = "Jane";
+        name.familyName = "Doe";
+        contact.name = name;
+
+        // save
+        contact.save(onSaveSuccess,onSaveError);
+
+        // clone
+        var clone = contact.clone();
+        clone.name.givenName = "John";
+        console.log("Original contact name = " + contact.name.givenName);
+        console.log("Cloned contact name = " + clone.name.givenName);
+
+        // remove
+        contact.remove(onRemoveSuccess,onRemoveError);
+    }
+
+    // onSaveSuccess: Get a snapshot of the current contacts
+    //
+    function onSaveSuccess(contact) {
+        alert("Save Success");
+    }
+
+    // onSaveError: Failed to get the contacts
+    //
+    function onSaveError(contactError) {
+        alert("Error = " + contactError.code);
+    }
+
+    // onRemoveSuccess: Get a snapshot of the current contacts
+    //
+    function onRemoveSuccess(contacts) {
+        alert("Removal Success");
+    }
+
+    // onRemoveError: Failed to get the contacts
+    //
+    function onRemoveError(contactError) {
+        alert("Error = " + contactError.code);
+    }
+
+    </script>
+  </head>
+  <body>
+    <h1>Example</h1>
+    <p>Guerrero Mariana</p>
+  </body>
 </html>
